@@ -20,7 +20,7 @@ def log_and_plot_predictions(true_values, predictions, test_dates,
     # Log des résultats dans la table
     res_tab.loc[(model_name, 'MAE'), (attack_name, eps_str)] = mae
     res_tab.loc[(model_name, 'SIM'), (attack_name, eps_str)] = sim
-    res_tab.loc[(model_name, 'RSME'), (attack_name, eps_str)] = rmse
+    res_tab.loc[(model_name, 'RMSE'), (attack_name, eps_str)] = rmse
 
     # Affichage console
     print(f"{model_name} | {attack_name} – Epsilon {eps_str} – MAE: {mae:.4f} | SIM: {sim:.4f}")
