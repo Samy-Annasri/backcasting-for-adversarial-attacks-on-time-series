@@ -1,6 +1,6 @@
 import torch
 import numpy as np
-def evaluate_model_google(model, test_loader, dates, train_size, val_size):
+def evaluate_model_google(model, test_loader, dates, train_size):
     """
     Evaluates a trained model on the test set and returns real vs predicted values with dates.
 
@@ -9,7 +9,6 @@ def evaluate_model_google(model, test_loader, dates, train_size, val_size):
         test_loader (DataLoader): DataLoader for the test set.
         dates (list): Full list of dates (same order as the full dataset).
         train_size (int): Number of training samples.
-        val_size (int): Number of validation samples.
 
     Returns:
         dict: {
@@ -30,7 +29,7 @@ def evaluate_model_google(model, test_loader, dates, train_size, val_size):
             predicted_values.append(outputs.cpu().numpy())
 
             batch_size = inputs.shape[0]
-            start_idx = train_size + val_size + i * test_loader.batch_size
+            start_idx = train_size + i * test_loader.batch_size
             end_idx = min(start_idx + batch_size, len(dates))
             test_indices.extend(range(start_idx, end_idx))
 
