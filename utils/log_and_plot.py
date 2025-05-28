@@ -5,7 +5,8 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error
 def log_and_plot_predictions(true_values, predictions, test_dates,
                              true_values_rolling, predictions_rolling,
                              model_name, attack_name, epsilon,
-                             res_tab, similarity_fn,google=False):
+                             res_tab, similarity_fn,google=False,
+                             reverse=False):
     """
     Calcule les métriques, les enregistre dans res_tab, et trace les courbes.
     """
@@ -38,13 +39,27 @@ def log_and_plot_predictions(true_values, predictions, test_dates,
       plt.tight_layout()
       plt.show()
     else:
-      plt.figure(figsize=(10,6))
-      plt.plot(test_dates, true_values, label='Real Values', color='blue')
-      plt.plot(test_dates, predictions, label='Predictions', color='red', linestyle='--')
-      plt.xlabel('Date')
-      plt.ylabel('Stock Price')
-      plt.title('Real vs Predicted Stock Prices')
-      plt.legend()
-      plt.xticks(rotation=45)
-      plt.tight_layout()
-      plt.show()
+      if reverse == False:
+        plt.figure(figsize=(10,6))
+        plt.plot(test_dates, true_values, label='Real Values', color='blue')
+        plt.plot(test_dates, predictions, label='Predictions', color='red', linestyle='--')
+        plt.xlabel('Date')
+        plt.ylabel('Stock Price')
+        plt.title('Real vs Predicted Stock Prices')
+        plt.legend()
+        plt.xticks(rotation=45)
+        plt.tight_layout()
+        plt.show()
+      else:
+        plt.figure(figsize=(10,6))
+        plt.gca().invert_xaxis()
+        plt.plot(test_dates, true_values, label='Real Values', color='blue')
+        plt.plot(test_dates, predictions, label='Predictions', color='red', linestyle='--')
+        plt.xlabel('Date')
+        plt.ylabel('Stock Price')
+        plt.title('Real vs Predicted Stock Prices (Reversed)')
+        plt.legend()
+        plt.xticks(rotation=45)
+        plt.tight_layout()
+        plt.show()
+
