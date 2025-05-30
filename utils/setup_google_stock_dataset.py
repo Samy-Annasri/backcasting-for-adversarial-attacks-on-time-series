@@ -35,7 +35,6 @@ def prepare_stock_dataset(
         df[col] = df[col].replace('[\$,]', '', regex=True).astype(float)
 
     df[date_col] = pd.to_datetime(df[date_col])
-    df = df.sort_values(date_col).reset_index(drop=True)
 
     # Min-max normalization
     min_max = {}
