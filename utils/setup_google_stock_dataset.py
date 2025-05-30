@@ -10,11 +10,22 @@ def prepare_stock_dataset(
     date_col='Date',
     sequence_length=30,
     batch_size=32,
-    train_ratio=0.7
+    train_ratio=0.7,
+    reverse=False
 ):
     """
     Prepares a stock price dataset with normalization and sequence formatting for time series forecasting.
-    Splits the dataset into train and test (no validation set).
+    Optionally applies a reverse AFTER splitting train/test to ensure correct alignment.
+
+    Args:
+        df (pd.DataFrame): The input dataframe.
+        feature_cols (list): List of features to use.
+        target_col (str): The target column to predict.
+        date_col (str): Column containing dates.
+        sequence_length (int): Length of the input sequence.
+        batch_size (int): Batch size for DataLoader.
+        train_ratio (float): Ratio of train/test split.
+        reverse (bool): Whether to reverse the train/test sets after splitting.
 
     Returns:
         dict: {
@@ -59,8 +70,20 @@ def prepare_stock_dataset(
     train_size = int(total_size * train_ratio)
     test_size = total_size - train_size
 
-    X_train, X_test = X[:train_size], X[train_size:]
-    Y_train, Y_test = Y[:train_size], Y[train_size:]
+    # Apply reverse if needed
+    if reverse:
+        # Reverse only train and test separately (to keep alignment)
+        X_train = X[:train_size].flip(dims=[0])
+        Y_train = Y[:train_size].flip(dims=[0])
+        X_test = X[train_size:].flip(dims=[0])
+        Y_test = Y[train_size:].flip(dims=[0])
+        # Also reverse the corresponding dates
+        dates_train = list(reversed(dates[:train_size]))
+        dates_test = list(reversed(dates[train_size:]))
+        dates = dates_train + dates_test
+    else:
+        X_train, X_test = X[:train_size], X[train_size:]
+        Y_train, Y_test = Y[:train_size], Y[train_size:]
 
     # Dataloaders
     train_loader = DataLoader(TensorDataset(X_train, Y_train), batch_size=batch_size, shuffle=True)
@@ -76,4 +99,3 @@ def prepare_stock_dataset(
         'X': X,
         'Y': Y,
     }
-
