@@ -13,79 +13,56 @@ def prepare_stock_dataset(
     train_ratio=0.7,
     reverse=False
 ):
-    """
-    Prepares a stock price dataset with normalization and sequence formatting for time series forecasting.
-    Optionally applies a reverse AFTER splitting train/test to ensure correct alignment.
-
-    Args:
-        df (pd.DataFrame): The input dataframe.
-        feature_cols (list): List of features to use.
-        target_col (str): The target column to predict.
-        date_col (str): Column containing dates.
-        sequence_length (int): Length of the input sequence.
-        batch_size (int): Batch size for DataLoader.
-        train_ratio (float): Ratio of train/test split.
-        reverse (bool): Whether to reverse the train/test sets after splitting.
-
-    Returns:
-        dict: {
-            'train_loader': DataLoader,
-            'test_loader': DataLoader,
-            'train_size': int,
-            'test_size': int,
-            'min_max': dict,
-            'dates': list of dates,
-            'X': torch.Tensor,
-            'Y': torch.Tensor
-        }
-    """
     df = df.copy()
 
-    # Clean and normalize price columns
+    # Nettoyage et conversion
     for col in ['Close/Last', 'Open', 'High', 'Low']:
         df[col] = df[col].replace('[\$,]', '', regex=True).astype(float)
 
     df[date_col] = pd.to_datetime(df[date_col])
 
-    # Min-max normalization
+    # Normalisation min-max
     min_max = {}
     for col in feature_cols:
         min_val, max_val = df[col].min(), df[col].max()
         min_max[col] = (min_val, max_val)
         df[col] = (df[col] - min_val) / (max_val - min_val)
 
-    # Create input/output sequences
     data = df[feature_cols].values.astype(np.float32)
+    dates_all = df[date_col].tolist()
+
     X, Y, dates = [], [], []
-    for i in range(len(data) - sequence_length):
-        X.append(data[i:i+sequence_length])
-        Y.append(data[i+sequence_length][feature_cols.index(target_col)])
-        dates.append(df[date_col].iloc[i + sequence_length])
 
-    X = torch.tensor(X)  # (N, sequence_length, num_features)
-    Y = torch.tensor(Y).unsqueeze(-1)  # (N, 1)
+    if not reverse:
+        # Mode standard : X = [t-30, ..., t-1], Y = t
+        for i in range(len(data) - sequence_length):
+            X.append(data[i:i+sequence_length])
+            Y.append(data[i+sequence_length][feature_cols.index(target_col)])
+            dates.append(dates_all[i+sequence_length])
+    else:
+        # Mode reverse : X = [t-1, ..., t-30], Y = t-31
+        for i in range(sequence_length, len(data)):
+            seq = data[i-sequence_length:i][::-1]  # inverse temporel
+            target_idx = i - sequence_length - 1
+            if target_idx >= 0:
+                X.append(seq)
+                Y.append(data[target_idx][feature_cols.index(target_col)])
+                dates.append(dates_all[target_idx])
+            else:
+                continue  # on ignore les tout premiers indices
 
-    # Split: 70% train, 30% test
+    X = torch.tensor(np.array(X))  # (N, seq_len, features)
+    Y = torch.tensor(np.array(Y)).unsqueeze(-1)  # (N, 1)
+
     total_size = len(X)
     train_size = int(total_size * train_ratio)
-    test_size = total_size - train_size
 
-    # Apply reverse if needed
-    if reverse:
-        # Reverse only train and test separately (to keep alignment)
-        X_train = X[:train_size].flip(dims=[0])
-        Y_train = Y[:train_size].flip(dims=[0])
-        X_test = X[train_size:].flip(dims=[0])
-        Y_test = Y[train_size:].flip(dims=[0])
-        # Also reverse the corresponding dates
-        dates_train = list(reversed(dates[:train_size]))
-        dates_test = list(reversed(dates[train_size:]))
-        dates = dates_train + dates_test
-    else:
-        X_train, X_test = X[:train_size], X[train_size:]
-        Y_train, Y_test = Y[:train_size], Y[train_size:]
+    X_train, X_test = X[:train_size], X[train_size:]
+    Y_train, Y_test = Y[:train_size], Y[train_size:]
 
-    # Dataloaders
+    dates_train = dates[:train_size]
+    dates_test = dates[train_size:]
+
     train_loader = DataLoader(TensorDataset(X_train, Y_train), batch_size=batch_size, shuffle=True)
     test_loader = DataLoader(TensorDataset(X_test, Y_test), batch_size=batch_size)
 
@@ -93,9 +70,9 @@ def prepare_stock_dataset(
         'train_loader': train_loader,
         'test_loader': test_loader,
         'train_size': train_size,
-        'test_size': test_size,
+        'test_size': len(X) - train_size,
         'min_max': min_max,
-        'dates': dates,
+        'dates': dates_train + dates_test,
         'X': X,
-        'Y': Y,
+        'Y': Y
     }
