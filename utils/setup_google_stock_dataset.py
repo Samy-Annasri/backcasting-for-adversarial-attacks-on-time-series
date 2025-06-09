@@ -63,8 +63,8 @@ def prepare_stock_dataset(
     dates_train = dates[:train_size]
     dates_test = dates[train_size:]
 
-    train_loader = DataLoader(TensorDataset(X_train, Y_train), batch_size=batch_size, shuffle=True)
-    test_loader = DataLoader(TensorDataset(X_test, Y_test), batch_size=batch_size)
+    train_loader = DataLoader(TensorDataset(X_train, Y_train), batch_size=batch_size, shuffle=True,drop_last=True)
+    test_loader = DataLoader(TensorDataset(X_test, Y_test), batch_size=batch_size,drop_last=True)
 
     return {
         'train_loader': train_loader,
