@@ -7,26 +7,19 @@ def log_and_plot_predictions(true_values, predictions, test_dates,
                              model_name, attack_name, epsilon,
                              res_tab, similarity_fn,google=False,
                              reverse=False):
-    """
-    Calcule les métriques, les enregistre dans res_tab, et trace les courbes.
-    """
 
-    # Dénormalisation déjà faite en amont
     mae = mean_absolute_error(true_values, predictions)
     sim = similarity_fn(true_values, predictions)
     rmse = np.sqrt(mean_squared_error(true_values, predictions))
 
     eps_str = f"{epsilon:.2f}"
 
-    # Log des résultats dans la table
     res_tab.loc[(model_name, 'MAE'), (attack_name, eps_str)] = mae
     res_tab.loc[(model_name, 'SIM'), (attack_name, eps_str)] = sim
     res_tab.loc[(model_name, 'RMSE'), (attack_name, eps_str)] = rmse
 
-    # Affichage console
     print(f"{model_name} | {attack_name} – Epsilon {eps_str} – MAE: {mae:.4f} | SIM: {sim:.4f}")
 
-    # Plot
     if google == False:
       plt.figure(figsize=(12, 6))
       plt.plot(test_dates, true_values_rolling, label='real rolling average', color='blue')
