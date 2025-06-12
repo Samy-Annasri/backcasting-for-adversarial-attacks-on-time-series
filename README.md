@@ -48,24 +48,14 @@ An **autoregressive** version of the attack, where the perturbation is reapplied
 
 ---
 
-## Reproducibility
+## Run the code
 
-To ensure identical results across runs:
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Samy-Annasri/ReverseForecastAttack/blob/main/ReverseForecasAttack.ipynb)
 
-```python
-import torch, random, numpy as np, os
 
-def set_seed(seed=42):
-    random.seed(seed)
-    np.random.seed(seed)
-    torch.manual_seed(seed)
-    torch.cuda.manual_seed_all(seed)
-    os.environ['PYTHONHASHSEED'] = str(seed)
-    torch.backends.cudnn.deterministic = True
-    torch.backends.cudnn.benchmark = False
-
-set_seed(42)
-```
+1. Click the badge/link to open the notebook on Google Colab.
+2. Go to **Runtime → Run all** to execute the entire notebook.
+3. No installation required. Works entirely in Colab.
 
 ---
 
