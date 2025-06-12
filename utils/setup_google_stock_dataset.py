@@ -15,13 +15,11 @@ def prepare_stock_dataset(
 ):
     df = df.copy()
 
-    # Nettoyage et conversion
     for col in ['Close/Last', 'Open', 'High', 'Low']:
         df[col] = df[col].replace('[\$,]', '', regex=True).astype(float)
 
     df[date_col] = pd.to_datetime(df[date_col])
 
-    # Normalisation min-max
     min_max = {}
     for col in feature_cols:
         min_val, max_val = df[col].min(), df[col].max()
@@ -34,22 +32,22 @@ def prepare_stock_dataset(
     X, Y, dates = [], [], []
 
     if not reverse:
-        # Mode standard : X = [t-30, ..., t-1], Y = t
+        # Standard mode : X = [t-30, ..., t-1], Y = t
         for i in range(len(data) - sequence_length):
             X.append(data[i:i+sequence_length])
             Y.append(data[i+sequence_length][feature_cols.index(target_col)])
             dates.append(dates_all[i+sequence_length])
     else:
-        # Mode reverse : X = [t-1, ..., t-30], Y = t-31
+        # Reverse mode : X = [t-1, ..., t-30], Y = t-31
         for i in range(sequence_length, len(data)):
-            seq = data[i-sequence_length:i][::-1]  # inverse temporel
+            seq = data[i-sequence_length:i][::-1]
             target_idx = i - sequence_length - 1
             if target_idx >= 0:
                 X.append(seq)
                 Y.append(data[target_idx][feature_cols.index(target_col)])
                 dates.append(dates_all[target_idx])
             else:
-                continue  # on ignore les tout premiers indices
+                continue
 
     X = torch.tensor(np.array(X))  # (N, seq_len, features)
     Y = torch.tensor(np.array(Y)).unsqueeze(-1)  # (N, 1)
