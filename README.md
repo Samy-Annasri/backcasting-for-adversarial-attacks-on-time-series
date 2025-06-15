@@ -50,7 +50,7 @@ An **autoregressive** version of the attack, where the perturbation is reapplied
 
 ## Run the code
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Samy-Annasri/ReverseForecastAttack/blob/main/ReverseForecasAttack.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Samy-Annasri/ReverseForecastAttack/blob/main/ReverseForecastAttack.ipynb)
 
 
 1. Click the badge/link to open the notebook on Google Colab.
