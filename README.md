@@ -6,13 +6,13 @@ This project introduces an adversarial attack method for time series forecasting
 
 ### Main Goal
 
-To demonstrate that it is possible to significantly degrade the predictions of a forecasting model (LSTM, RNN, GRU...) at inference time only, without knowing the true future values.
+To demonstrate that it is possible to significantly degrade the predictions of a forecasting model (LSTM, RNN, GRU...) at inference time only, without knowing the true future values and in black box.
 
 ---
 
 ## Principle of the RFA Attack
 
-The key idea is to train a "mirror" model, named model_rev, which predicts the past from the present like a proxy. That can be used to apply an FGSM-style perturbation on reversed input sequences.
+The key idea is to train a "mirror" model, named model_rev, which predicts the past from the present like a proxy. That can be used to apply an FGSM-style perturbation on reversed input sequences. In the future, maybe that can be good to try other attack like BIM,etc...
 
 ### Pipeline of the REV (Reverse Forecast Attack)
 
@@ -23,9 +23,13 @@ The key idea is to train a "mirror" model, named model_rev, which predicts the p
 5. Re-reverse the perturbed window to restore the original temporal order
 6. Send it to model_normal (the standard forecasting model)
 
-### REV_AUTO Variant
+### REV_NO_EQUAL Variant
+The **REV_NO_EQUAL** variant is a realistic extension of the Reverse Forecast Attack (RFA) designed to simulate black-box scenarios where the attacker does not know the target model architecture.
 
-An **autoregressive** version of the attack, where the perturbation is reapplied over successive predictions, simulating an attack over multiple forecasting steps (J+1, J+2, etc.).
+Unlike the standard RFA setup, which uses a reverse model (model_rev) trained with the same architecture as the target forecasting model (model_normal), REV_NO_EQUAL intentionally introduces an architectural mismatch.
+
+This variant is designed to assess the influence and weight of the reverse model's architecture on the effectiveness of the RFA attack. In other words, to evaluate how much the success of RFA depends on using a reverse model that closely matches the victim model.
+
 
 ---
 
