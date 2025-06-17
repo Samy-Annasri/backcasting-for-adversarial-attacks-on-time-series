@@ -67,7 +67,6 @@ This variant is designed to assess the influence and weight of the reverse model
 
 * Currently, the attack is limited to step J+1 because model_rev only predicts the immediate past.
 * To go beyond that :
-
   * Use REV_AUTO to propagate the attack autoregressively (in development).
-  * Test the attack on diverse time series datasets like weather,energy,Traffic,etc...
+* Test the attack on diverse time series datasets like weather,energy,Traffic,etc...
 ---
