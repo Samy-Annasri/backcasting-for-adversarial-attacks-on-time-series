@@ -69,5 +69,5 @@ This variant is designed to assess the influence and weight of the reverse model
 * To go beyond that :
 
   * Use REV_AUTO to propagate the attack autoregressively (in development).
-  * other...
+  * Test the attack on diverse time series datasets like weather,energy,Traffic,etc...
 ---
