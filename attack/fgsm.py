@@ -1,4 +1,7 @@
-def fgsm_attack(model, data_loader, epsilon, price_min, price_max):
+import torch
+import numpy as np
+
+def fgsm_attack(model, data_loader, loss_fn, epsilon, price_min, price_max):
     model.eval()
     adv_predictions = []
     true_values = []
