@@ -1,3 +1,6 @@
+import torch
+import numpy as np
+
 def fgsm_surrogate_attack(
     model_surrogate, model_target,
     data_loader, epsilon,
