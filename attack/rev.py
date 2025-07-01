@@ -29,7 +29,7 @@ def reverse_forecast_attack(
             loss.backward()
 
             # FGSM attack on reversed input
-            x_adv_reversed = x_rev + esp * x_rev.grad.sign()
+            x_adv_reversed = x_rev + float(esp) * x_rev.grad.sign()
             x_adv_reversed = torch.clamp(x_adv_reversed, 0, 1)
 
             # Flip back to normal order
