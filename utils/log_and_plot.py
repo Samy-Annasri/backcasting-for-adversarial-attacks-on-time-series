@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import os
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 
 def log_and_plot_predictions(true_values, predictions, test_dates,
