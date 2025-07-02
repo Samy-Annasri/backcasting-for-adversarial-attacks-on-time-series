@@ -6,7 +6,7 @@ def log_and_plot_predictions(true_values, predictions, test_dates,
                              true_values_rolling, predictions_rolling,
                              model_name, attack_name, epsilon,
                              res_tab, similarity_fn,google=False,
-                             reverse=False):
+                             reverse=False,save_path=None, save_png=False):
 
     mae = mean_absolute_error(true_values, predictions)
     sim = similarity_fn(true_values, predictions)
@@ -43,6 +43,10 @@ def log_and_plot_predictions(true_values, predictions, test_dates,
         plt.xticks(rotation=45)
         plt.tight_layout()
         plt.show()
+        if save_png and save_path:
+          os.makedirs(save_path, exist_ok=True)
+          filename = f"{model_name.lower()}_{attack_name.lower()}_eps_{epsilon:.2f}.png"
+          plt.savefig(os.path.join(save_path, filename))
       else:
         plt.figure(figsize=(10,6))
         plt.gca().invert_xaxis()
@@ -55,4 +59,8 @@ def log_and_plot_predictions(true_values, predictions, test_dates,
         plt.xticks(rotation=45)
         plt.tight_layout()
         plt.show()
+        if save_png and save_path:
+          os.makedirs(save_path, exist_ok=True)
+          filename = f"{model_name.lower()}_{attack_name.lower()}_eps_{epsilon:.2f}.png"
+          plt.savefig(os.path.join(save_path, filename))
 
