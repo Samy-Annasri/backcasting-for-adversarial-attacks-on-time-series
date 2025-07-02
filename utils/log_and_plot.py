@@ -43,11 +43,11 @@ def log_and_plot_predictions(true_values, predictions, test_dates,
         plt.legend()
         plt.xticks(rotation=45)
         plt.tight_layout()
-        plt.show()
         if save_png and save_path:
           os.makedirs(save_path, exist_ok=True)
           filename = f"{model_name.lower()}_{attack_name.lower()}_eps_{epsilon:.2f}.png"
           plt.savefig(os.path.join(save_path, filename))
+          plt.show()
       else:
         plt.figure(figsize=(10,6))
         plt.gca().invert_xaxis()
@@ -59,9 +59,9 @@ def log_and_plot_predictions(true_values, predictions, test_dates,
         plt.legend()
         plt.xticks(rotation=45)
         plt.tight_layout()
-        plt.show()
         if save_png and save_path:
           os.makedirs(save_path, exist_ok=True)
           filename = f"{model_name.lower()}_{attack_name.lower()}_eps_{epsilon:.2f}.png"
           plt.savefig(os.path.join(save_path, filename))
+          plt.show()
 
