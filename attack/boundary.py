@@ -21,6 +21,9 @@ def boundary_attack(model, test_loader, epsilon, price_min, price_max, num_iter=
         best_mae = torch.mean(torch.abs(model(best_adv_data) - target)).item()
 
         # Step 3: Iteratively try to improve adversarial example
+        # naiv implementation for the moment i think that can be
+        # easyli improved with for exemple maybe penalize candidates 
+        # that are too far from the original ?
         for _ in range(num_iter):
             # Compute direction towards original data
             direction = data - adv_data
