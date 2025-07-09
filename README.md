@@ -43,12 +43,30 @@ This variant is designed to assess the influence and weight of the reverse model
 
 ---
 
+## Baseline Attacks for Comparison
+
+To evaluate the effectiveness of the Reverse Forecast Attack (RFA), we compared it against several existing adversarial attacks (white-box and black-box) adapted for time series forecasting:
+
+| Attack | Description | Requires Ground Truth | Black-box Applicable |
+|--------|-------------|------------------------|-----------------------|
+| **FGSM** | Fast Gradient Sign Method – applied with access to future true values. | ✅ Yes | ❌ No |
+| **BIM** | Basic Iterative Method – iterative version of FGSM. | ✅ Yes | ❌ No |
+| **FGSM Proxy** | FGSM using a surrogate model trained on same data. | ❌ No | ✅ Yes |
+| **RFA** | Uses a reverse model to perturb inputs without future knowledge. | ❌ No | ✅ Yes |
+| **REV_NO_EQUAL** | RFA variant with different architectures between attacker and victim. | ❌ No | ✅ Yes |
+| **Boundary Attack** | Decision-based black-box attack for classification, adapted here to regression.| ❌ No | ✅ Yes |
+
+These baselines help quantify how much performance degradation RFA induces compared to traditional or proxy-based attacks.
+
+---
+
 ## Code Structure
 
 * `models` : folder containing PyTorch model implementations
 * `data` : folder containing the Google stock CSV file
 * `attack` : folder with the attack implementation
 * `utils` :  folder with utility functions needed to run code
+* `result` :  folder with all the result for each seed 
 
 ---
 
