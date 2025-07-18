@@ -1,3 +1,6 @@
+import torch
+import numpy as np
+
 def evaluate_model_elec(model, test_loader, dates, train_size):
     """
     Evaluates a trained model on the test set and returns real vs predicted values with dates.
