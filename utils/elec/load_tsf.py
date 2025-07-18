@@ -27,10 +27,3 @@ def load_tsf(file_path):
         })
 
     return series_data
-
-data = load_tsf("data/electricity_hourly_dataset.tsf")
-
-df = pd.DataFrame([
-    {"series_name": d["series_name"], **{f"t_{i}": v for i, v in enumerate(d["series"])}}
-    for d in data
-])
