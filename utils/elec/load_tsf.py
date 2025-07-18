@@ -1,4 +1,4 @@
-import pd
+import pandas as pd
 
 def load_tsf(file_path):
     with open(file_path, "r") as file:
