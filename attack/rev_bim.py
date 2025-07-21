@@ -8,6 +8,7 @@ def reverse_forecast_attack_bim(
     alpha,
     num_iter
 ):
+    device = next(model_rev.parameters()).device
     model_rev.eval()
     model_normal.eval()
     loss_fn = torch.nn.MSELoss()
@@ -19,15 +20,22 @@ def reverse_forecast_attack_bim(
         all_pred = []
 
         for (x_rev, y_rev), (x_normal, y_normal) in zip(test_loader_rev, test_loader):
-            x_adv = x_rev.clone().detach()
+            x_adv = x_rev.to(device).clone().detach()
+            y_rev = y_rev.to(device).clone().detach()
             x_adv.requires_grad = True
 
+            x_rev = x_rev.to(device)
+            
             for _ in range(num_iter):
+                model_rev.train()
+
                 output_rev = model_rev(x_adv)
                 loss = loss_fn(output_rev, y_rev)
 
                 model_rev.zero_grad()
                 loss.backward()
+
+                model_rev.eval()
 
                 grad_sign = x_adv.grad.data.sign()
                 x_adv = x_adv + alpha * grad_sign
