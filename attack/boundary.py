@@ -6,11 +6,12 @@ def boundary_attack(model, test_loader, epsilon, price_min, price_max, num_iter=
     Decision-based boundary attack for regression models.
     """
     model.eval()
+    device = next(model.parameters()).device
     true_vals = []
     adv_preds = []
 
     for data, target in test_loader:
-        data, target = data.float(), target.float()
+        data, target = data.to(device).float(), target.to(device).float()
 
         # Step 1: Initialize adversarial example with random perturbation
         perturbation = torch.randn_like(data) * epsilon
