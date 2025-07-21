@@ -6,6 +6,7 @@ def reverse_forecast_attack(
     epsilons,
     price_min, price_max
 ):
+    device = next(model_rev.parameters()).device
     model_rev.eval()
     model_normal.eval()
     loss_fn = torch.nn.MSELoss()
@@ -17,8 +18,12 @@ def reverse_forecast_attack(
         all_pred = []
         
         for (x_rev, y_rev), (x_normal, y_normal) in zip(test_loader_rev, test_loader):
-            x_rev = x_rev.clone().detach().requires_grad_(True)
-            y_rev = y_rev.clone().detach()
+            x_rev = x_rev.to(device).clone().detach().requires_grad_(True)
+            y_rev = y_rev.to(device).clone().detach()
+            x_normal = x_normal.to(device)
+            y_normal = y_normal.to(device)
+
+            model_rev.train()
 
             # Predict with reversed model
             output_rev = model_rev(x_rev)
@@ -27,6 +32,8 @@ def reverse_forecast_attack(
             loss = loss_fn(output_rev, y_rev)
             model_rev.zero_grad()
             loss.backward()
+
+            model_rev.eval()
 
             # FGSM attack on reversed input
             x_adv_reversed = x_rev + float(esp) * x_rev.grad.sign()
@@ -39,7 +46,7 @@ def reverse_forecast_attack(
             with torch.no_grad():
                 pred = model_normal(x_adv)
 
-            # Denormalize
+            # Denormalize (pass to CPU first)
             pred_denorm = pred.cpu().numpy() * (price_max - price_min) + price_min
             y_denorm = y_normal.cpu().numpy() * (price_max - price_min) + price_min
 
