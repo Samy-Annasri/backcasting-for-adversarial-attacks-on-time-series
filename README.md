@@ -1,8 +1,8 @@
-# Reverse Forecast Attack (RFA)<br>Adversarial Attacks on Time Series Forecasting without Future Ground Truth
+# Backcasting for Adversarial attacks on Time Series (BATS)<br>Adversarial Attacks on Time Series Forecasting without Future Ground Truth
 
 ## General Description
 
-This project introduces an adversarial attack method for time series forecasting models called Reverse Forecast Attack (RFA). Unlike traditional FGSM attacks, which require access to the true future values ("ground truth"), RFA works without any knowledge of the actual target outputs of the forecasting model.
+This project introduces an adversarial attack method for time series forecasting models called **Backcasting for Adversarial attacks on Time Series (BATS)**. Unlike traditional FGSM attacks, which require access to the true future values ("ground truth"), **BATS** works without any knowledge of the actual target outputs of the forecasting model.
 
 ### Main Goal
 
@@ -10,26 +10,25 @@ To demonstrate that it is possible to significantly degrade the predictions of a
 
 ---
 
-## Principle of the RFA Attack
+## Principle of the BATS Attack
 
-The key idea is to train a "mirror" model, named model_rev, which predicts the past from the present like a proxy. That can be used to apply an FGSM-style perturbation on reversed input sequences. In the future, maybe that can be good to try other attack like BIM,etc...
+The key idea is to train a "mirror" model, named `model_rev`, which predicts the past from the present like a proxy. That can be used to apply an FGSM-style perturbation on reversed input sequences. (work also with another attack like BIM)
 
-### Pipeline of the REV (Reverse Forecast Attack)
+### Pipeline of BATS (Backcasting for Adversarial attacks on Time Series)
 
-1. Take a time window x_t (e.g., 30 values)
-2. Reverse it to obtain x_rev
-3. Feed it into model_rev (the model that predicts the past)
-4. Use this output as a proxy to apply FGSM
-5. Re-reverse the perturbed window to restore the original temporal order
-6. Send it to model_normal (the standard forecasting model)
+1. Take a time window `x_t` (e.g., 30 values)  
+2. Reverse it to obtain `x_rev`  
+3. Feed it into `model_rev` (the model that predicts the past)  
+4. Use this output as a proxy to apply FGSM  
+5. Re-reverse the perturbed window to restore the original temporal order  
+6. Send it to `model_normal` (the standard forecasting model)
 
-### REV_NO_EQUAL Variant
-The **REV_NO_EQUAL** variant is a realistic extension of the Reverse Forecast Attack (RFA) designed to simulate black-box scenarios where the attacker does not know the target model architecture.
+### BATS_NO_EQUAL Variant
+The **BATS_NO_EQUAL** variant is a realistic extension of **BATS** designed to simulate black-box scenarios where the attacker does not know the target model architecture.
 
-Unlike the standard RFA setup, which uses a reverse model (model_rev) trained with the same architecture as the target forecasting model (model_normal), REV_NO_EQUAL intentionally introduces an architectural mismatch.
+Unlike the standard **BATS** setup, which uses a reverse model (`model_rev`) trained with the same architecture as the target forecasting model (`model_normal`), **BATS_NO_EQUAL** intentionally introduces an architectural mismatch.
 
-This variant is designed to assess the influence and weight of the reverse model's architecture on the effectiveness of the RFA attack. In other words, to evaluate how much the success of RFA depends on using a reverse model that closely matches the victim model.
-
+This variant is designed to assess the influence and weight of the reverse model's architecture on the effectiveness of the **BATS** attack. In other words, to evaluate how much the success of **BATS** depends on using a reverse model that closely matches the victim model.
 
 ---
 
@@ -45,28 +44,28 @@ This variant is designed to assess the influence and weight of the reverse model
 
 ## Baseline Attacks for Comparison
 
-To evaluate the effectiveness of the Reverse Forecast Attack (RFA), we compared it against several existing adversarial attacks (white-box and black-box) adapted for time series forecasting:
+To evaluate the effectiveness of **BATS**, we compared it against several existing adversarial attacks (white-box and black-box) adapted for time series forecasting:
 
 | Attack | Description | Requires Ground Truth | Black-box Applicable |
 |--------|-------------|------------------------|-----------------------|
 | **FGSM** | Fast Gradient Sign Method – applied with access to future true values. | ✅ Yes | ❌ No |
 | **BIM** | Basic Iterative Method – iterative version of FGSM. | ✅ Yes | ❌ No |
 | **FGSM Proxy** | FGSM using a surrogate model trained on same data. | ❌ No | ✅ Yes |
-| **RFA** | Uses a reverse model to perturb inputs without future knowledge. | ❌ No | ✅ Yes |
-| **REV_NO_EQUAL** | RFA variant with different architectures between attacker and victim. | ❌ No | ✅ Yes |
+| **BATS** | Uses a reverse model to perturb inputs without future knowledge. | ❌ No | ✅ Yes |
+| **BATS_NO_EQUAL** | BATS variant with different architectures between attacker and victim. | ❌ No | ✅ Yes |
 | **Boundary Attack** | Decision-based black-box attack for classification, adapted here to regression.| ❌ No | ✅ Yes |
 
-These baselines help quantify how much performance degradation RFA induces compared to traditional or proxy-based attacks.
+These baselines help quantify how much performance degradation **BATS** induces compared to traditional or proxy-based attacks.
 
 ---
 
 ## Code Structure
 
-* `models` : folder containing PyTorch model implementations
-* `data` : folder containing the Google stock CSV file
-* `attack` : folder with the attack implementation
-* `utils` :  folder with utility functions needed to run code
-* `result` :  folder with all the result for each seed 
+* `models` : folder containing PyTorch model implementations  
+* `data` : folder containing the Google stock CSV file  
+* `attack` : folder with the attack implementation  
+* `utils` :  folder with utility functions needed to run code  
+* `result` :  folder with all the result for each seed
 
 ---
 
@@ -74,17 +73,30 @@ These baselines help quantify how much performance degradation RFA induces compa
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Samy-Annasri/ReverseForecastAttack/blob/main/ReverseForecastAttack.ipynb)
 
-
-1. Click the badge/link to open the notebook on Google Colab.
-2. Go to **Runtime → Run all** to execute the entire notebook.
+1. Click the badge/link to open the notebook on Google Colab.  
+2. Go to **Runtime → Run all** to execute the entire notebook.  
 3. No installation required. Works entirely in Colab.
 
 ---
 
-## Limitations & Future Work
+## Sources
 
-* Currently, the attack is limited to step J+1 because model_rev only predicts the immediate past.
-* To go beyond that :
-  * Use REV_AUTO to propagate the attack autoregressively (in development).
-* Test the attack on diverse time series datasets like weather,energy,Traffic,etc...
----
+- **Google Stock Data** — Nasdaq. "Alphabet Inc. Class C Common Stock (GOOG) Historical Data". *Nasdaq*.  
+  [https://www.nasdaq.com/market-activity/stocks/goog/historical](https://www.nasdaq.com/market-activity/stocks/goog/historical)  
+
+- **General Time Series Datasets** — *Forecasting Data Repository*.  
+  [https://forecastingdata.org/](https://forecastingdata.org/)  
+
+- **Electricity Load Diagrams 2011–2014** — *Zenodo* record 4656140.  
+  [https://zenodo.org/records/4656140](https://zenodo.org/records/4656140)  
+
+- **Sunspot Numbers** — *Zenodo* record 4654722.  
+  [https://zenodo.org/records/4654722](https://zenodo.org/records/4654722)  
+
+- **U.S. Daily Births** — *Zenodo* record 4656049.  
+  [https://zenodo.org/records/4656049](https://zenodo.org/records/4656049)  
+
+- **Pedestrian Counts** — *Zenodo* record 4656626.  
+  [https://zenodo.org/records/4656626](https://zenodo.org/records/4656626)  
+
+
