@@ -77,6 +77,26 @@ These baselines help quantify how much performance degradation **BATS** induces 
 2. Go to **Runtime → Run all** to execute the entire notebook.  
 3. No installation required. Works entirely in Colab.
 
+## Reproducibility
+
+For reproducibility of the paper’s experiments, we provide one notebook per dataset:
+
+- `google_stock.ipynb` → Google Stock Prices
+- `electricity.ipynb` → Electricity Load
+- `sunspots.ipynb` → Sunspot Numbers
+- `births.ipynb` → U.S. Daily Births
+- `pedestrian.ipynb` → Pedestrian Counts
+
+Each notebook:
+1. Preprocesses the dataset
+2. Trains forecasting models (RNN, GRU, LSTM)
+3. Runs adversarial attacks (FGSM, BIM, BATS, BATS_NO_EQUAL, Boundary Attack)
+4. Exports results (CSV + plots) into the my `results/` git folder
+
+### Seeds
+We use **10 seeds**: `0–123-1337-2024-314-42-7-77-888-999`.  
+All results reported in the paper correspond to averages over these seeds.
+
 ---
 
 ## Sources
