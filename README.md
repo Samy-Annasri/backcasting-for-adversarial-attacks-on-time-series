@@ -71,11 +71,18 @@ These baselines help quantify how much performance degradation **BATS** induces 
 
 ## Run the code
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Samy-Annasri/ReverseForecastAttack/blob/main/ReverseForecastAttack.ipynb)
+## Run the code
 
-1. Click the badge/link to open the notebook on Google Colab.  
-2. Go to **Runtime → Run all** to execute the entire notebook.  
-3. No installation required. Works entirely in Colab.
+1. Make sure you have `prepare_local.sh` and `requirements.txt` in the project root.  
+
+2. Run the setup script to create a Python virtual environment and install dependencies:
+
+```bash
+./prepare_local.sh
+```
+3. Activate the virtual environment
+
+4. run the notebook (It is recommended to start with BATS_Google_Stock.ipynb as it contains the most explanations and step-by-step guidance.)
 
 ## Reproducibility
 
@@ -91,7 +98,7 @@ Each notebook:
 1. Preprocesses the dataset
 2. Trains forecasting models (RNN, GRU, LSTM)
 3. Runs adversarial attacks (FGSM, BIM, BATS, BATS_NO_EQUAL, Boundary Attack)
-4. Exports results (CSV + plots) into the my `results/` git folder
+4. Exports results (CSV + plots) into the `results/` folder
 
 ### Seeds
 We use **10 seeds**: `0–123-1337-2024-314-42-7-77-888-999`.  
